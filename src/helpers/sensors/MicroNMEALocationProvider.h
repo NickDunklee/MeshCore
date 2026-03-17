@@ -41,7 +41,7 @@ class MicroNMEALocationProvider : public LocationProvider {
     RefCountedDigitalPin* _peripher_power;
     int _pin_reset;
     int _pin_en;
-    long next_check = 0;
+    uint32_t last_check = 0;
     long time_valid = 0;
 
 public :
@@ -127,8 +127,8 @@ public :
 
         if (!isValid()) time_valid = 0;
 
-        if (millis() > next_check) {
-            next_check = millis() + 1000;
+        if ((uint32_t)(millis() - last_check) >= 1000) {
+            last_check = millis();
             if (_time_sync_needed && time_valid > 2) {
                 if (_clock != NULL) {
                     _clock->setCurrentTime(getTimestamp());
