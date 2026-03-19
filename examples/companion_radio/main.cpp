@@ -245,7 +245,7 @@ void setup() {
 #endif
 }
 
-#ifdef defined(WIFI_SSID) && defined(ESP32)
+#if defined(WIFI_SSID) && defined(ESP32)
 static void wifi_reconnect_check() {
   constexpr uint32_t CHECK_INTERVAL_MS  = 5000;
   constexpr uint32_t RECONNECT_AFTER_MS = 30000;
