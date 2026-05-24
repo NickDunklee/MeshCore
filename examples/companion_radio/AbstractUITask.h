@@ -22,17 +22,24 @@ enum class UIEventType {
     ack
 };
 
+class ShutdownHandler {
+public:
+  virtual void onBeforeShutdown() = 0;
+};
+
 class AbstractUITask {
 protected:
   mesh::MainBoard* _board;
   BaseSerialInterface* _serial;
   bool _connected;
+  ShutdownHandler* _shutdown_handler = nullptr;
 
   AbstractUITask(mesh::MainBoard* board, BaseSerialInterface* serial) : _board(board), _serial(serial) {
     _connected = false;
   }
 
 public:
+  void setShutdownHandler(ShutdownHandler* h) { _shutdown_handler = h; }
   void setHasConnection(bool connected) { _connected = connected; }
   bool hasConnection() const { return _connected; }
   uint16_t getBattMilliVolts() const { return _board->getBattMilliVolts(); }

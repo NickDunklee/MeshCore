@@ -694,6 +694,8 @@ void UITask::shutdown(bool restart){
 
   #endif // PIN_BUZZER
 
+  if (_shutdown_handler) _shutdown_handler->onBeforeShutdown();
+
   if (restart) {
     _board->reboot();
   } else {
@@ -821,26 +823,31 @@ void UITask::loop() {
 
 #ifdef AUTO_SHUTDOWN_MILLIVOLTS
   if (millis() > next_batt_chck) {
-    uint16_t milliVolts = getBattMilliVolts();
-    if (milliVolts > 0 && milliVolts < AUTO_SHUTDOWN_MILLIVOLTS) {
+    uint32_t now = millis();
+    if (!_board->isBattReadSafe(now)) {
+      // TX just completed — voltage hasn't recovered yet; retry after settle window.
+      next_batt_chck = now + POST_TX_BATT_SETTLE_MS + 50;
+    } else {
+      uint16_t milliVolts = getBattMilliVolts();
+      if (milliVolts > 0 && milliVolts < AUTO_SHUTDOWN_MILLIVOLTS) {
 
-      // show low battery shutdown alert
-      // we should only do this for eink displays, which will persist after power loss
-      #if defined(THINKNODE_M1) || defined(LILYGO_TECHO)
-      if (_display != NULL) {
-        _display->startFrame();
-        _display->setTextSize(2);
-        _display->setColor(DisplayDriver::RED);
-        _display->drawTextCentered(_display->width() / 2, 20, "Low Battery.");
-        _display->drawTextCentered(_display->width() / 2, 40, "Shutting Down!");
-        _display->endFrame();
+        // show low battery shutdown alert
+        // we should only do this for eink displays, which will persist after power loss
+        #if defined(THINKNODE_M1) || defined(LILYGO_TECHO)
+        if (_display != NULL) {
+          _display->startFrame();
+          _display->setTextSize(2);
+          _display->setColor(DisplayDriver::RED);
+          _display->drawTextCentered(_display->width() / 2, 20, "Low Battery.");
+          _display->drawTextCentered(_display->width() / 2, 40, "Shutting Down!");
+          _display->endFrame();
+        }
+        #endif
+
+        shutdown();
+
       }
-      #endif
-
-      shutdown();
-
-    }
-    next_batt_chck = millis() + 8000;
+      next_batt_chck = millis() + 8000;
   }
 #endif
 }
