@@ -84,7 +84,7 @@ struct AdvertPath {
   uint8_t path[MAX_PATH_SIZE];
 };
 
-class MyMesh : public BaseChatMesh, public DataStoreHost, public ShutdownHandler {
+class MyMesh : public BaseChatMesh, public DataStoreHost {
 public:
   MyMesh(mesh::Radio &radio, mesh::RNG &rng, mesh::RTCClock &rtc, SimpleMeshTables &tables, DataStore& store, AbstractUITask* ui=NULL);
 
@@ -165,14 +165,6 @@ protected:
 
 public:
   void savePrefs() { _store->savePrefs(_prefs, sensors.node_lat, sensors.node_lon); }
-
-  void onBeforeShutdown() override {
-    if (dirty_contacts_expiry) {
-      saveContacts();
-      dirty_contacts_expiry = 0;
-    }
-    savePrefs();
-  }
 
 #if ENV_INCLUDE_GPS == 1
   void applyGpsPrefs() {
