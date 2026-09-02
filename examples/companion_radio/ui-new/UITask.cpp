@@ -992,7 +992,7 @@ void UITask::loop() {
           _display->startFrame();
           _display->setTextSize(2);
           _display->setColor(UIColor::warning_txt);
-          _display->drawTextCentered(_display->width() / 2, 20, "Low battery.");
+          _display->drawTextCentered(_display->width() / 2, 20, "Low Battery.");
           _display->drawTextCentered(_display->width() / 2, 40, "Shutting Down!");
           _display->endFrame();
           if (_display->isEink() == false) { delay(3000); }
