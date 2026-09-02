@@ -509,7 +509,7 @@ public:
       display.setTextSize(1);
       if (_shutdown_init) {
         display.setColor(UIColor::warning_txt);
-        display.drawTextCentered(display.width() / 2, 34, "Shutting down...");
+        display.drawTextCentered(display.width() / 2, 34, "hibernating...");
       } else {
         display.setColor(UIColor::secondary_txt);
         display.drawXbm((display.width() - 32) / 2, 18, power_icon, 32, 32);
@@ -992,7 +992,7 @@ void UITask::loop() {
           _display->startFrame();
           _display->setTextSize(2);
           _display->setColor(UIColor::warning_txt);
-          _display->drawTextCentered(_display->width() / 2, 20, "Low battery!");
+          _display->drawTextCentered(_display->width() / 2, 20, "Low battery.");
           _display->drawTextCentered(_display->width() / 2, 40, "Shutting Down!");
           _display->endFrame();
           if (_display->isEink() == false) { delay(3000); }

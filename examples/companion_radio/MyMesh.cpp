@@ -2327,6 +2327,9 @@ void MyMesh::checkCLIRescueCmd() {
       }
 
     } else if (strcmp(cli_command, "reboot") == 0) {
+      if (dirty_contacts_expiry) { // is there are pending dirty contacts write needed?
+        saveContacts();
+      }
       board.reboot();  // doesn't return
     } else {
       Serial.println("  Error: unknown command");
