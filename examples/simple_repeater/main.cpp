@@ -183,7 +183,7 @@ void loop() {
       } else {
         static bool notified = false;
         if (!notified) {
-          Serial.println("Shutting down!");
+          Serial.println("Powering off...");
           notified = true;
         }
       }
