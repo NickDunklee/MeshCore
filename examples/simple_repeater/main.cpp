@@ -178,6 +178,7 @@ void loop() {
       userBtnDownAt = millis();
     } else if ((unsigned long)(millis() - userBtnDownAt) >= USER_BTN_HOLD_OFF_MILLIS) {
       if (!the_mesh.hasPendingWork()) {
+        the_mesh.flushPending();
         board.powerOff();  // does not return
       } else {
         static bool notified = false;
@@ -197,6 +198,7 @@ void loop() {
 #ifdef DISPLAY_CLASS
   ui_task.loop();
   if (ui_task.wantsPowerOff() && !the_mesh.hasPendingWork()) {
+    the_mesh.flushPending();
     board.powerOff();  // does not return
   }
 #endif

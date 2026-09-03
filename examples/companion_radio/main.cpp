@@ -264,15 +264,8 @@ void loop() {
 
 #ifdef DISPLAY_CLASS
   if (ui_task.wantsShutdown() && !the_mesh.hasPendingWork()) {
-    if (display.isEink()) {
-      display.startFrame();
-      display.setTextSize(2);
-      display.setColor(UIColor::primary_txt);
-      display.drawTextCentered(display.width() / 2, 28, "Powered off.");
-      display.endFrame();
-    } else {
-      display.turnOff();
-    }
+    display.turnOff();
+    the_mesh.onBeforeShutdown();
     radio_driver.powerOff();
     if (ui_task.isRestart()) board.reboot();
     else board.powerOff();
